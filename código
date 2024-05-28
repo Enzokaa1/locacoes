@@ -1,0 +1,70 @@
+CREATE TABLE Clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(20) NOT NULL,
+    nascimento DATE NOT NULL
+);
+
+CREATE TABLE Veiculos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    veiculo VARCHAR(50) NOT NULL,
+    cor VARCHAR(20) NOT NULL,
+    placa VARCHAR(10) NOT NULL,
+    diaria DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE Locacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cod_locacao INT NOT NULL,
+    cliente_id INT,
+    veiculo_id INT,
+    dias INT NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES Clientes(id),
+    FOREIGN KEY (veiculo_id) REFERENCES Veiculos(id)
+);
+
+INSERT INTO Clientes (nome, cpf, nascimento) VALUES
+('Ada Lovelace', '111.222.333-44', '1815-12-10'),
+('Nikola Tesla', '555.666.777-88', '1856-07-10'),
+('Marie Curie', '999.888.777-66', '1867-11-07'),
+('Alan Turing', '333.444.555-66', '1912-06-23'),
+('Katherine Johnson', '777.888.999-00', '1918-08-26');
+
+INSERT INTO Veiculos (veiculo, cor, placa, diaria) VALUES
+('Corsa', 'Prata', 'XYZ-9876', 35.00),
+('Palio', 'Vermelho', 'RST-4567', 40.00),
+('Civic', 'Branco', 'LMN-1234', 55.00),
+('Focus', 'Azul', 'PQR-7890', 45.00),
+('Gol', 'Verde', 'STU-2345', 30.00);
+
+INSERT INTO Locacoes (cod_locacao, cliente_id, veiculo_id, dias, total) VALUES
+(301, 6, 6, 4, 140.00),
+(302, 7, 7, 5, 200.00),
+(303, 8, 8, 2, 110.00),
+(304, 9, 9, 6, 270.00),
+(305, 10, 10, 3, 90.00);
+
+CREATE VIEW LocacoesDetalhadas AS
+SELECT
+    l.id AS locacao_id,
+    l.cod_locacao,
+    l.dias,
+    l.total,
+    c.id AS cliente_id,
+    c.nome AS cliente_nome,
+    c.cpf AS cliente_cpf,
+    c.nascimento AS cliente_nascimento,
+    v.id AS veiculo_id,
+    v.veiculo AS veiculo_nome,
+    v.cor AS veiculo_cor,
+    v.placa AS veiculo_placa,
+    v.diaria AS veiculo_diaria
+FROM
+    Locacoes l
+INNER JOIN
+    Clientes c ON l.cliente_id = c.id
+INNER JOIN
+    Veiculos v ON l.veiculo_id = v.id;
+    
+    select * from LocacoesDetalhadas
